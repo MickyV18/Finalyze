@@ -26,6 +26,62 @@ def login_with_google():
     auth_url = f"{GOOGLE_AUTH_URL}?{'&'.join([f'{key}={value}' for key, value in params.items()])}"
     return RedirectResponse(auth_url)
 
+@router.post("/login")
+def process_login(email: str = Form(...), password: str = Form(...)):
+    # Cari user berdasarkan email
+    response = supabase.table("users").select("*").eq("email", email).execute()
+    if not response.data:
+        raise HTTPException(status_code=400, detail="Invalid email or password")
+
+    user = response.data[0]
+
+    # Verifikasi password
+    if not bcrypt.checkpw(password.encode('utf-8'), user["password"].encode('utf-8')):
+        raise HTTPException(status_code=400, detail="Invalid email or password")
+
+    return {"message": f"Welcome back, {user['username']}!"}
+
+
+
+from app.config import supabase
+from fastapi.responses import RedirectResponse
+from fastapi import HTTPException, status
+import bcrypt
+
+from app.config import supabase
+from fastapi.responses import RedirectResponse
+from fastapi import HTTPException, status
+import bcrypt
+
+@router.post("/register")
+def process_register(
+    username: str = Form(...),
+    email: str = Form(...),
+    password: str = Form(...),
+    confirm_password: str = Form(...)
+):
+    # Validasi password
+    if password != confirm_password:
+        raise HTTPException(status_code=400, detail="Passwords do not match")
+
+    # Hash password
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+    # Simpan ke Supabase
+    try:
+        response = supabase.table("users").insert({
+            "username": username,
+            "email": email,
+            "password": hashed_password,
+        }).execute()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error creating user: {e}")
+
+    # Redirect ke halaman login setelah registrasi berhasil
+    return RedirectResponse(url="/auth/login-page", status_code=status.HTTP_302_FOUND)
+
+
+
 @router.get("/callback")
 async def callback(code: str):
     try:
@@ -76,3 +132,7 @@ templates = Jinja2Templates(directory="app/templates")
 @router.get("/login-page", response_class=HTMLResponse)
 def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
+
+@router.get("/register-page", response_class=HTMLResponse)
+def register_page(request: Request):
+    return templates.TemplateResponse("register.html", {"request": request})
