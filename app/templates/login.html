@@ -3,21 +3,45 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
+    <title>Login with Google</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+      }
+      .login-container {
+        text-align: center;
+        padding: 2rem;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .google-btn {
+        display: inline-flex;
+        align-items: center;
+        background-color: #4285f4;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.3s;
+      }
+      .google-btn:hover {
+        background-color: #357abd;
+      }
+    </style>
   </head>
   <body>
-    <h1>Login</h1>
-    <form method="post" action="/auth/manual-login">
-      <label for="username">Username:</label>
-      <input type="text" id="username" name="username" required />
-      <br />
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required />
-      <br />
-      <button type="submit">Login</button>
-    </form>
-    <br />
-    <a href="/auth/login">Login with Google</a>
+    <div class="login-container">
+      <h1>Welcome</h1>
+      <p>Please sign in with your Google account</p>
+      <a href="/auth/login" class="google-btn"> Sign in with Google </a>
+    </div>
   </body>
 </html>
-

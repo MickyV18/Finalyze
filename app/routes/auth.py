@@ -1,5 +1,4 @@
 from fastapi import APIRouter, HTTPException
-from fastapi import Form
 from fastapi.responses import RedirectResponse
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -60,16 +59,6 @@ async def callback(code: str):
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-
-
-@router.post("/manual-login")
-def manual_login(username: str = Form(...), password: str = Form(...)):
-    # Validasi username dan password di sini
-    if username == "admin" and password == "password123":
-        return {"message": "Login successful"}
-    else:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-
 
 templates = Jinja2Templates(directory="app/templates")
 
