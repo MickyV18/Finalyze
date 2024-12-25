@@ -4,6 +4,7 @@ from app.routes import auth
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi import Request
+from capsule.routes import capsule
 
 templates = Jinja2Templates(directory="app/templates")
 
@@ -16,3 +17,5 @@ def landing_page(request: Request):
 
 # Register auth router (if needed for other routes)
 app.include_router(auth.router, prefix="/auth")
+
+app.include_router(capsule.router, prefix="/api/v1", tags=["capsules"])
