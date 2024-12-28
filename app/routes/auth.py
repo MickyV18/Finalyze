@@ -52,16 +52,23 @@ async def callback(code: str):
         userinfo_response.raise_for_status()
         user_info = userinfo_response.json()
 
-        return {
-            "access_token": tokens["access_token"],
-            "refresh_token": tokens.get("refresh_token"),
-            "user_info": user_info,
-        }
+        # Redirect to dashboard with user name
+        user_name = user_info.get("name", "User")
+        return RedirectResponse(f"/auth/dashboard?user_name={user_name}")
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
 
 templates = Jinja2Templates(directory="app/templates")
 
 @router.get("/login-page", response_class=HTMLResponse)
 def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
+
+@router.get("/dashboard", response_class=HTMLResponse)
+def dashboard(request: Request, user_name: str = "User"):
+    return templates.TemplateResponse("dashboard.html", {"request": request, "user_name": user_name})
+
+@router.get("/logout", response_class=HTMLResponse)
+def logout():
+    return RedirectResponse("/")

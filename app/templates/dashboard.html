@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f5f5;
+      }
+      .header {
+        background-color: #4285f4;
+        color: white;
+        padding: 1rem;
+        text-align: center;
+      }
+      .content {
+        padding: 2rem;
+        text-align: center;
+      }
+      .logout-btn {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #e53935;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .logout-btn:hover {
+        background-color: #d32f2f;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Welcome, {{ user_name }}</h1>
+    </div>
+    <div class="content">
+      <p>You are now logged in. Feel free to explore!</p>
+      <a href="/auth/logout" class="logout-btn">Logout</a>
+    </div>
+  </body>
+</html>
