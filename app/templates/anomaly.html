@@ -1,0 +1,204 @@
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-2xl font-bold mb-6">Anomaly Detection Dashboard</h1>
+
+  <!-- Form untuk input transaksi baru -->
+  <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <h2 class="text-xl font-semibold mb-4">New Transaction</h2>
+    <form id="transactionForm" class="space-y-4">
+      <div>
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="amount">
+          Amount
+        </label>
+        <input
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          id="amount"
+          type="number"
+          step="0.01"
+          required
+        />
+      </div>
+
+      <div>
+        <label
+          class="block text-gray-700 text-sm font-bold mb-2"
+          for="category"
+        >
+          Category
+        </label>
+        <select
+          class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          id="category"
+          required
+        >
+          <option value="food">Food</option>
+          <option value="transport">Transport</option>
+          <option value="entertainment">Entertainment</option>
+          <option value="bills">Bills</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div>
+        <label
+          class="block text-gray-700 text-sm font-bold mb-2"
+          for="description"
+        >
+          Description
+        </label>
+        <input
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          id="description"
+          type="text"
+          required
+        />
+      </div>
+
+      <div>
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="date">
+          Date
+        </label>
+        <input
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          id="date"
+          type="date"
+          required
+        />
+      </div>
+
+      <button
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        type="submit"
+      >
+        Check Transaction
+      </button>
+    </form>
+  </div>
+
+  <!-- Hasil deteksi anomali -->
+  <div
+    id="result"
+    class="hidden bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+  >
+    <h2 class="text-xl font-semibold mb-4">Detection Result</h2>
+    <div id="resultContent"></div>
+  </div>
+
+  <!-- Riwayat transaksi -->
+  <div class="bg-white shadow-md rounded px-8 pt-6 pb-8">
+    <h2 class="text-xl font-semibold mb-4">Transaction History</h2>
+    <div id="history" class="overflow-x-auto">
+      <table class="min-w-full table-auto">
+        <thead>
+          <tr>
+            <th class="px-4 py-2">Date</th>
+            <th class="px-4 py-2">Amount</th>
+            <th class="px-4 py-2">Category</th>
+            <th class="px-4 py-2">Description</th>
+            <th class="px-4 py-2">Status</th>
+          </tr>
+        </thead>
+        <tbody id="historyContent"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  document
+    .getElementById("transactionForm")
+    .addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const transaction = {
+        amount: parseFloat(document.getElementById("amount").value),
+        category: document.getElementById("category").value,
+        description: document.getElementById("description").value,
+        date: document.getElementById("date").value,
+        user_id: localStorage.getItem("user_id"), // Assuming you store user_id in localStorage
+      };
+
+      try {
+        const response = await fetch("/api/anomaly/detect", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(transaction),
+        });
+
+        const result = await response.json();
+
+        // Tampilkan hasil
+        const resultDiv = document.getElementById("result");
+        const resultContent = document.getElementById("resultContent");
+        resultDiv.classList.remove("hidden");
+
+        resultContent.innerHTML = `
+            <div class="${
+              result.is_anomaly
+                ? "bg-red-100 border-red-500"
+                : "bg-green-100 border-green-500"
+            } border-l-4 p-4">
+                <p class="font-bold">${
+                  result.is_anomaly ? "Anomaly Detected!" : "Normal Transaction"
+                }</p>
+                <p>Confidence Score: ${(result.confidence_score * 100).toFixed(
+                  2
+                )}%</p>
+            </div>
+        `;
+
+        // Refresh history
+        loadHistory();
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Error processing transaction");
+      }
+    });
+
+  async function loadHistory() {
+    try {
+      const user_id = localStorage.getItem("user_id");
+      const response = await fetch(`/api/anomaly/history/${user_id}`);
+      const data = await response.json();
+
+      const historyContent = document.getElementById("historyContent");
+      historyContent.innerHTML = data
+        .map(
+          (transaction) => `
+            <tr>
+                <td class="border px-4 py-2">${new Date(
+                  transaction.date
+                ).toLocaleDateString()}</td>
+                <td class="border px-4 py-2">$${transaction.amount.toFixed(
+                  2
+                )}</td>
+                <td class="border px-4 py-2">${transaction.category}</td>
+                <td class="border px-4 py-2">${transaction.description}</td>
+                <td class="border px-4 py-2">
+                    <span class="${
+                      transaction.anomaly_results[0]?.is_anomaly
+                        ? "bg-red-200 text-red-800"
+                        : "bg-green-200 text-green-800"
+                    } px-2 py-1 rounded-full text-sm">
+                        ${
+                          transaction.anomaly_results[0]?.is_anomaly
+                            ? "Anomaly"
+                            : "Normal"
+                        }
+                    </span>
+                </td>
+            </tr>
+        `
+        )
+        .join("");
+    } catch (error) {
+      console.error("Error loading history:", error);
+    }
+  }
+
+  // Load history when page loads
+  document.addEventListener("DOMContentLoaded", loadHistory);
+</script>
+{% endblock %}
