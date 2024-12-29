@@ -5,6 +5,8 @@ from fastapi.templating import Jinja2Templates
 from fastapi import Request
 from app.config import settings
 import httpx
+from app.config import supabase
+
 
 router = APIRouter()
 
@@ -52,11 +54,61 @@ async def callback(code: str):
         userinfo_response.raise_for_status()
         user_info = userinfo_response.json()
 
-        # Redirect to dashboard with user name
-        user_name = user_info.get("name", "User")
-        return RedirectResponse(f"/auth/dashboard?user_name={user_name}")
+        # Prepare user data for Supabase
+        user_data = {
+            "email": user_info.get("email"),
+            "full_name": user_info.get("name"),
+            "avatar_url": user_info.get("picture"),
+            "auth_provider": "google",
+            "auth_provider_id": user_info.get("id"),
+            "last_sign_in": "now()",  # Menggunakan fungsi NOW() dari PostgreSQL
+            "updated_at": "now()"
+        }
+
+        # Insert atau update user ke Supabase
+        try:
+            response = supabase.table("users").upsert(
+                user_data,
+                on_conflict="email"  # Menggunakan email sebagai unique constraint
+            ).execute()
+            
+            if hasattr(response, 'error') and response.error:
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"Failed to save user data: {response.error.message}"
+                )
+                
+            # Ambil data user yang baru disimpan
+            user = response.data[0] if response.data else None
+            
+            if not user:
+                raise HTTPException(
+                    status_code=500,
+                    detail="Failed to retrieve saved user data"
+                )
+
+            # Redirect ke dashboard dengan user name
+            return RedirectResponse(
+                f"/auth/dashboard?user_name={user.get('full_name', 'User')}&user_id={user.get('id')}"
+            )
+
+        except Exception as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Database error: {str(e)}"
+            )
+
+    except httpx.HTTPError as e:
+        raise HTTPException(
+            status_code=400,
+            detail=f"OAuth error: {str(e)}"
+        )
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(
+            status_code=500,
+            detail=f"Server error: {str(e)}"
+        )
+
 
 
 templates = Jinja2Templates(directory="app/templates")

@@ -1,50 +1,159 @@
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f5f5f5;
-      }
-      .header {
-        background-color: #4285f4;
-        color: white;
-        padding: 1rem;
-        text-align: center;
-      }
-      .content {
-        padding: 2rem;
-        text-align: center;
-      }
-      .logout-btn {
-        margin-top: 20px;
-        padding: 10px 20px;
-        background-color: #e53935;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        text-decoration: none;
-      }
-      .logout-btn:hover {
-        background-color: #d32f2f;
-      }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body>
-    <div class="header">
-      <h1>Welcome, {{ user_name }}</h1>
+  <body class="bg-gray-100">
+    <nav class="bg-white shadow-lg">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between h-16">
+          <div class="flex">
+            <div class="flex-shrink-0 flex items-center">
+              <h1 class="text-xl font-bold">Finance Anomaly Detection</h1>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <span class="text-gray-700 mr-4">Welcome, {{ user_name }}</span>
+              <a
+                href="/auth/logout"
+                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
+              >
+                Logout
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <div class="px-4 py-6 sm:px-0">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Quick Links -->
+          <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-6">
+              <h3 class="text-lg font-medium text-gray-900">Quick Links</h3>
+              <div class="mt-4 space-y-4">
+                <a
+                  href="/anomaly"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
+                >
+                  Transaction Analysis
+                </a>
+                <a
+                  href="#"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
+                >
+                  Reports
+                </a>
+                <a
+                  href="#"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
+                >
+                  Settings
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Summary Card -->
+          <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-6">
+              <h3 class="text-lg font-medium text-gray-900">Summary</h3>
+              <div class="mt-4" id="summary">
+                <p class="text-sm text-gray-600">Loading summary...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile Card -->
+          <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-6">
+              <h3 class="text-lg font-medium text-gray-900">Profile</h3>
+              <div class="mt-4">
+                <p class="text-sm text-gray-600">Welcome to your dashboard!</p>
+                <p class="text-sm text-gray-600 mt-2">
+                  Here you can manage your transactions and view analytics.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="content">
-      <p>You are now logged in. Feel free to explore!</p>
-      <a href="/anomaly" class="logout-btn">Go to Anomaly Detection</a>
-      <a href="/auth/logout" class="logout-btn">Logout</a>
-    </div>
+    <script>
+      // Store user information in localStorage
+      const urlParams = new URLSearchParams(window.location.search);
+      const userId = urlParams.get("user_id");
+      const userName = urlParams.get("user_name");
+
+      if (userId) {
+        localStorage.setItem("user_id", userId);
+      }
+      if (userName) {
+        localStorage.setItem("user_name", userName);
+      }
+
+      // Function to load summary data
+      async function loadSummary() {
+        const userId = localStorage.getItem("user_id");
+        if (!userId) return;
+
+        try {
+          const response = await fetch(`/api/anomaly/history/${userId}`);
+          if (!response.ok) throw new Error("Failed to load summary");
+
+          const data = await response.json();
+
+          // Calculate summary statistics
+          const totalTransactions = data.length;
+          const anomalies = data.filter(
+            (t) => t.anomaly_results[0]?.is_anomaly
+          ).length;
+          const totalAmount = data.reduce((sum, t) => sum + t.amount, 0);
+
+          // Update summary card
+          document.getElementById("summary").innerHTML = `
+                    <div class="space-y-3">
+                        <p class="text-sm text-gray-600">
+                            Total Transactions: <span class="font-medium">${totalTransactions}</span>
+                        </p>
+                        <p class="text-sm text-gray-600">
+                            Detected Anomalies: <span class="font-medium text-red-600">${anomalies}</span>
+                        </p>
+                        <p class="text-sm text-gray-600">
+                            Total Amount: <span class="font-medium">$${totalAmount.toLocaleString()}</span>
+                        </p>
+                    </div>
+                `;
+        } catch (error) {
+          console.error("Error loading summary:", error);
+          document.getElementById("summary").innerHTML = `
+                    <p class="text-sm text-red-600">Error loading summary data</p>
+                `;
+        }
+      }
+
+      // Load summary when page loads
+      document.addEventListener("DOMContentLoaded", loadSummary);
+
+      // Check login status
+      function checkLoginStatus() {
+        const userId = localStorage.getItem("user_id");
+        if (!userId) {
+          window.location.href = "/auth/login-page";
+        }
+      }
+
+      // Check login status periodically
+      setInterval(checkLoginStatus, 5000);
+    </script>
   </body>
 </html>
+{% endblock %}
