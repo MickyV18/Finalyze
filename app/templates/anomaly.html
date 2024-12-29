@@ -1,184 +1,275 @@
 {% block content %}
-<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <!-- Enhanced Header -->
-    <div class="text-center mb-12">
-      <h1 class="text-4xl font-bold text-gray-900 mb-3">
-        Anomaly Detection Dashboard
-      </h1>
-      <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-        Monitor and analyze your transactions for unusual patterns with our
-        advanced detection system
+<div class="min-h-screen">
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>Dasbor Arus Kas</h1>
+      <p>
+        Pantau dan analisis transaksi Anda untuk menemukan pola yang tidak biasa
+        dengan sistem deteksi canggih kami
       </p>
     </div>
 
-    <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
-      <!-- Enhanced Transaction Form -->
-      <div
-        class="bg-white shadow-xl rounded-xl overflow-hidden transform hover:scale-[1.01] transition-transform duration-300"
-      >
-        <div class="bg-blue-600 px-6 py-4">
-          <h2 class="text-xl font-semibold text-white">New Transaction</h2>
+    <div class="grid-container">
+      <!-- Transaction Form -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Transaksi Baru</h2>
         </div>
-        <div class="p-6">
-          <form id="transactionForm" class="space-y-5">
-            <div>
-              <label
-                class="block text-sm font-medium text-gray-700 mb-2"
-                for="amount"
-              >
-                Amount
-              </label>
-              <div class="relative">
-                <span
-                  class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-                  >$</span
-                >
+        <div class="card-body">
+          <form id="transactionForm">
+            <div class="form-group">
+              <label for="amount">Jumlah</label>
+              <div class="input-group">
+                <span class="currency-symbol">Rp</span>
                 <input
-                  class="pl-8 shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full text-sm border-gray-300 rounded-lg transition-colors duration-200"
                   id="amount"
                   type="number"
-                  step="0.01"
+                  step="100"
                   required
-                  placeholder="Enter amount"
+                  placeholder="Masukkan Biaya"
                 />
               </div>
             </div>
 
-            <div>
-              <label
-                class="block text-sm font-medium text-gray-700 mb-2"
-                for="category"
-              >
-                Category
-              </label>
-              <select
-                class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full text-sm border-gray-300 rounded-lg transition-colors duration-200"
-                id="category"
-                required
-              >
-                <option value="">Select category</option>
-                <option value="food">Food</option>
-                <option value="transport">Transport</option>
-                <option value="entertainment">Entertainment</option>
-                <option value="bills">Bills</option>
-                <option value="other">Other</option>
+            <div class="form-group">
+              <label for="category">Kategori</label>
+              <select id="category" required>
+                <option value="">Pilih Kategori</option>
+                <option value="food">Makanan</option>
+                <option value="transport">Transportasi</option>
+                <option value="entertainment">Hiburan</option>
+                <option value="bills">Tagihan</option>
+                <option value="other">Lainnya</option>
               </select>
             </div>
 
-            <div>
-              <label
-                class="block text-sm font-medium text-gray-700 mb-2"
-                for="description"
-              >
-                Description
-              </label>
+            <div class="form-group">
+              <label for="description">Deskripsi</label>
               <input
-                class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full text-sm border-gray-300 rounded-lg transition-colors duration-200"
                 id="description"
                 type="text"
                 required
-                placeholder="Enter description"
+                placeholder="Masukkan Deskripsi"
               />
             </div>
 
-            <div>
-              <label
-                class="block text-sm font-medium text-gray-700 mb-2"
-                for="date"
-              >
-                Date
-              </label>
-              <input
-                class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full text-sm border-gray-300 rounded-lg transition-colors duration-200"
-                id="date"
-                type="date"
-                required
-              />
+            <div class="form-group">
+              <label for="date">Tanggal</label>
+              <input id="date" type="date" required />
             </div>
 
-            <div class="pt-4">
-              <button
-                type="submit"
-                class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transform hover:scale-[1.02] transition-all duration-200"
-              >
-                Check Transaction
-              </button>
-            </div>
+            <button type="submit" class="btn btn-primary">
+              Kirim Transaksi
+            </button>
           </form>
         </div>
       </div>
 
-      <!-- Enhanced Detection Result -->
-      <div
-        id="result"
-        class="hidden bg-white shadow-xl rounded-xl overflow-hidden transform hover:scale-[1.01] transition-transform duration-300"
-      >
-        <div class="bg-blue-600 px-6 py-4">
-          <h2 class="text-xl font-semibold text-white">Detection Result</h2>
+      <!-- Detection Result -->
+      <div id="result" class="card hidden">
+        <div class="card-header">
+          <h2>Hasil Deteksi</h2>
         </div>
-        <div class="p-6">
+        <div class="card-body">
           <div id="resultContent"></div>
         </div>
       </div>
     </div>
 
-    <!-- Enhanced Transaction History -->
-    <div
-      class="mt-12 bg-white shadow-xl rounded-xl overflow-hidden transform hover:scale-[1.01] transition-transform duration-300"
-    >
-      <div class="bg-blue-600 px-6 py-4">
-        <h2 class="text-xl font-semibold text-white">Transaction History</h2>
+    <!-- Transaction History -->
+    <div class="card mt-20">
+      <div class="card-header">
+        <h2>Histori Transaksi</h2>
       </div>
-      <div class="p-6">
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table>
+            <thead>
               <tr>
-                <th
-                  scope="col"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Date
-                </th>
-                <th
-                  scope="col"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Amount
-                </th>
-                <th
-                  scope="col"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Category
-                </th>
-                <th
-                  scope="col"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Description
-                </th>
-                <th
-                  scope="col"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Status
-                </th>
+                <th>Tanggal</th>
+                <th>Jumlah</th>
+                <th>Kategori</th>
+                <th>Deskripsi</th>
+                <th>Status</th>
               </tr>
             </thead>
-            <tbody
-              id="historyContent"
-              class="bg-white divide-y divide-gray-200"
-            >
-              <!-- Transaction history will be loaded here -->
-            </tbody>
+            <tbody id="historyContent"></tbody>
           </table>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<style>
+  .min-h-screen {
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    padding: 2rem 0;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .header h1 {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 1rem;
+  }
+
+  .header p {
+    color: #666;
+    font-size: 1.1rem;
+  }
+
+  .grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .grid-container {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+  .card-header {
+    background: #4a90e2;
+    color: white;
+    padding: 1rem 1.5rem;
+  }
+
+  .card-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 500;
+  }
+
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+
+  .input-group {
+    position: relative;
+  }
+
+  .currency-symbol {
+    position: absolute;
+    left: 0.4rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+  }
+
+  .input-group input {
+    padding-left: 1.75rem;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .btn-primary {
+    background: #4a90e2;
+    color: white;
+    width: 100%;
+  }
+
+  .btn-primary:hover {
+    background: #357abd;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  .mt-20 {
+    margin-top: 2rem;
+  }
+
+  /* Status badges */
+  .status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .status-normal {
+    background: #d1fae5;
+    color: #065f46;
+  }
+
+  .status-anomaly {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+</style>
 
 {% endblock %} {% block scripts %}
 <script>
@@ -268,14 +359,10 @@
 
         resultContent.innerHTML = `
         <div class="${
-          result.analysis.is_anomaly
-            ? "bg-red-50 border-red-400"
-            : "bg-green-50 border-green-400"
-        } border-l-4 p-6 rounded-lg">
-          <div class="flex items-center mb-4">
-            <div class="${
-              result.analysis.is_anomaly ? "text-red-800" : "text-green-800"
-            } font-semibold text-xl">
+          result.analysis.is_anomaly ? "status-anomaly" : "status-normal"
+        } p-6 rounded">
+          <div class="result-header">
+            <div class="result-title">
               ${
                 result.analysis.is_anomaly
                   ? "Anomaly Detected!"
@@ -283,30 +370,28 @@
               }
             </div>
           </div>
-          <div class="space-y-3 text-base">
-            <p class="text-gray-700 flex items-center">
-              <span class="font-medium mr-2">Confidence Score:</span>
-              <span class="px-3 py-1 rounded-full ${
-                result.analysis.is_anomaly ? "bg-red-100" : "bg-green-100"
-              }">
-                ${(result.analysis.confidence_score * 100).toFixed(2)}%
-              </span>
+          <div class="result-details">
+            <p class="confidence-score">
+              <span class="label">Confidence Score:</span>
+              <span class="value">${(
+                result.analysis.confidence_score * 100
+              ).toFixed(2)}%</span>
             </p>
-            <p class="text-gray-700">
-              <span class="font-medium">Amount Analysis:</span><br>
-              <span class="text-sm">${
+            <p class="analysis-item">
+              <span class="label">Amount Analysis:</span>
+              <span class="value">${
                 result.analysis.insights.amount_analysis
               }</span>
             </p>
-            <p class="text-gray-700">
-              <span class="font-medium">Timing:</span><br>
-              <span class="text-sm">${
+            <p class="analysis-item">
+              <span class="label">Timing:</span>
+              <span class="value">${
                 result.analysis.insights.timing_analysis
               }</span>
             </p>
-            <p class="text-gray-700">
-              <span class="font-medium">Category:</span><br>
-              <span class="text-sm">${
+            <p class="analysis-item">
+              <span class="label">Category:</span>
+              <span class="value">${
                 result.analysis.insights.category_frequency
               }</span>
             </p>
@@ -340,25 +425,17 @@
       historyContent.innerHTML = data
         .map(
           (transaction) => `
-        <tr class="hover:bg-gray-50 transition-colors duration-150">
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-            ${formatDate(transaction.date)}
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-            ${formatCurrency(transaction.amount)}
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 capitalize">
-            ${transaction.category}
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-            ${transaction.description}
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <span class="${
+        <tr>
+          <td>${formatDate(transaction.date)}</td>
+          <td>${formatCurrency(transaction.amount)}</td>
+          <td class="capitalize">${transaction.category}</td>
+          <td>${transaction.description}</td>
+          <td>
+            <span class="status-badge ${
               transaction.anomaly_results[0]?.is_anomaly
-                ? "bg-red-100 text-red-800"
-                : "bg-green-100 text-green-800"
-            } px-3 py-1 rounded-full text-xs font-medium">
+                ? "status-anomaly"
+                : "status-normal"
+            }">
               ${
                 transaction.anomaly_results[0]?.is_anomaly
                   ? "Anomaly"

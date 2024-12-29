@@ -4,10 +4,158 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Landing Page</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      @keyframes gradient {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      .container {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 3rem 4rem;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        text-align: center;
+        max-width: 600px;
+        width: 100%;
+        transform: translateY(0);
+        transition: all 0.3s ease;
+      }
+
+      .container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      h1 {
+        -webkit-background-clip: text;
+        -moz-background-clip: text;
+        background-clip: text;
+      }
+
+      p {
+        font-size: 1.2rem;
+        color: #4a5568;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+      }
+
+      .login-btn {
+        display: inline-block;
+        padding: 15px 40px;
+        font-size: 1.1rem;
+        color: white;
+        background: linear-gradient(45deg, #23a6d5, #23d5ab);
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .login-btn:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          120deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        transition: 0.5s;
+      }
+
+      .login-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(35, 166, 213, 0.3);
+      }
+
+      .login-btn:hover:before {
+        left: 100%;
+      }
+
+      .login-btn:active {
+        transform: translateY(0);
+      }
+
+      /* Animasi ketika halaman dimuat */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .container {
+        animation: fadeIn 1s ease-out;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 480px) {
+        .container {
+          padding: 2rem;
+        }
+
+        h1 {
+          font-size: 2rem;
+        }
+
+        p {
+          font-size: 1rem;
+        }
+
+        .login-btn {
+          padding: 12px 30px;
+          font-size: 1rem;
+        }
+      }
+    </style>
   </head>
   <body>
-    <h1>Welcome to Our Website</h1>
-    <p>Click the button below to log in.</p>
-    <a href="/auth/login-page"><button>Go to Login Page</button></a>
+    <div class="container">
+      <h1>Welcome to Finalyze</h1>
+      <p>
+        Aplikasi pintar untuk melacak, menganalisis, dan mengelola keuangan
+        Anda.
+      </p>
+      <a href="/auth/login-page" class="login-btn">Mulai Sekarang !!!</a>
+    </div>
   </body>
 </html>
