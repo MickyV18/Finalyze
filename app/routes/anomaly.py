@@ -2,14 +2,15 @@ from fastapi import APIRouter, HTTPException, Request, BackgroundTasks
 from pydantic import BaseModel, Field, validator
 from datetime import datetime, date
 from typing import Optional, Dict, Any
+import numpy as np
 from app.config import supabase, templates
 from app.anomaly_service import get_anomaly_detector
 
 router = APIRouter()
 
 class Transaction(BaseModel):
-    amount: float = Field(..., gt=0)  # harus lebih besar dari 0
-    date: str = Field(..., pattern=r'^\d{4}-\d{2}-\d{2}$')  # format YYYY-MM-DD
+    amount: float = Field(..., gt=0)
+    date: str = Field(..., pattern=r'^\d{4}-\d{2}-\d{2}$')
     category: str = Field(..., pattern=r'^(food|transport|entertainment|bills|other)$')
     description: str = Field(..., min_length=1, max_length=255)
     user_id: str = Field(..., min_length=1)
@@ -30,22 +31,26 @@ class Transaction(BaseModel):
 
 def serialize_for_json(obj: Any) -> Any:
     """Convert objects to JSON-serializable format"""
-    if isinstance(obj, bool):
-        return int(obj)  # Convert boolean to 0 or 1
-    elif isinstance(obj, (datetime, date)):
-        return obj.isoformat()
+    if isinstance(obj, np.bool_):
+        return bool(obj)  # Convert numpy.bool_ to Python bool
+    elif isinstance(obj, np.integer):
+        return int(obj)  # Convert numpy integers to Python int
+    elif isinstance(obj, np.floating):
+        return float(obj)  # Convert numpy floats to Python float
+    elif isinstance(obj, (np.ndarray, list)):
+        return [serialize_for_json(item) for item in obj]
     elif isinstance(obj, dict):
         return {k: serialize_for_json(v) for k, v in obj.items()}
-    elif isinstance(obj, (list, tuple)):
-        return [serialize_for_json(item) for item in obj]
+    elif isinstance(obj, (datetime, date)):
+        return obj.isoformat()
     return obj
 
 @router.post("/api/anomaly/detect")
 async def detect_anomaly(transaction: Transaction, background_tasks: BackgroundTasks):
     try:
-        # Log incoming data for debugging
         print(f"Received transaction data: {transaction.dict()}")
 
+        # Validate date
         try:
             datetime.strptime(transaction.date, '%Y-%m-%d')
         except ValueError:
@@ -62,7 +67,7 @@ async def detect_anomaly(transaction: Transaction, background_tasks: BackgroundT
         
         # Save transaction
         trans_data = {
-            'amount': transaction.amount,
+            'amount': float(transaction.amount),  # Ensure float type
             'date': transaction.date,
             'category': transaction.category,
             'description': transaction.description,
@@ -81,12 +86,15 @@ async def detect_anomaly(transaction: Transaction, background_tasks: BackgroundT
         detector = get_anomaly_detector()
         analysis = detector.analyze_transaction(trans_data)
         
-        # Prepare anomaly data with serialization
+        # Ensure all values are JSON serializable
+        serialized_analysis = serialize_for_json(analysis)
+        
+        # Prepare anomaly data
         anomaly_data = {
             'transaction_id': transaction_id,
-            'is_anomaly': int(analysis['is_anomaly']),  # Convert boolean to integer
-            'confidence_score': float(analysis['confidence_score']),
-            'insights': serialize_for_json(analysis['insights']),
+            'is_anomaly': bool(serialized_analysis['is_anomaly']),  # Ensure Python bool
+            'confidence_score': float(serialized_analysis['confidence_score']),  # Ensure Python float
+            'insights': serialized_analysis['insights'],
             'detected_at': datetime.utcnow().isoformat()
         }
         
@@ -97,13 +105,13 @@ async def detect_anomaly(transaction: Transaction, background_tasks: BackgroundT
         
         return {
             "transaction_id": transaction_id,
-            "analysis": serialize_for_json(analysis)
+            "analysis": serialized_analysis
         }
         
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))
     except Exception as e:
-        print(f"Error processing transaction: {str(e)}")  # Log error for debugging
+        print(f"Error processing transaction: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/api/anomaly/history/{user_id}")
@@ -115,7 +123,8 @@ async def get_history(user_id: str):
             .order('created_at', desc=True)\
             .execute()
         
-        return response.data
+        # Ensure all response data is JSON serializable
+        return serialize_for_json(response.data)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

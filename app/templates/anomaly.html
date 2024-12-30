@@ -1,457 +1,645 @@
 {% block content %}
-<div class="min-h-screen">
-  <div class="container">
-    <!-- Header -->
-    <div class="header">
-      <h1>Dasbor Arus Kas</h1>
-      <p>
-        Pantau dan analisis transaksi Anda untuk menemukan pola yang tidak biasa
-        dengan sistem deteksi canggih kami
-      </p>
-    </div>
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analisis Transaksi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Custom animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-    <div class="grid-container">
-      <!-- Transaction Form -->
-      <div class="card">
-        <div class="card-header">
-          <h2>Transaksi Baru</h2>
-        </div>
-        <div class="card-body">
-          <form id="transactionForm">
-            <div class="form-group">
-              <label for="amount">Jumlah</label>
-              <div class="input-group">
-                <span class="currency-symbol">Rp</span>
-                <input
-                  id="amount"
-                  type="number"
-                  step="100"
-                  required
-                  placeholder="Masukkan Biaya"
-                />
+      @keyframes gradientBG {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      body {
+        background: linear-gradient(-45deg, #f0f9ff, #e0f2fe, #f0f9ff);
+        background-size: 400% 400%;
+        animation: gradientBG 15s ease infinite;
+      }
+
+      .dashboard-card {
+        animation: fadeIn 0.6s ease-out;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(229, 231, 235, 0.5);
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+      }
+
+      .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-title {
+        color: #0f172a;
+        font-weight: 600;
+        font-size: 1.125rem;
+        margin-bottom: 1rem;
+        position: relative;
+        padding-bottom: 0.5rem;
+      }
+
+      .card-title:after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 2px;
+        width: 40px;
+        background: linear-gradient(90deg, #0ea5e9, transparent);
+      }
+
+      .input-group {
+        position: relative;
+      }
+
+      .currency-symbol {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #64748b;
+        z-index: 10;
+      }
+
+      .form-input {
+        transition: all 0.3s ease;
+        border: 1px solid rgba(229, 231, 235, 0.8);
+        background: rgba(255, 255, 255, 0.9);
+      }
+
+      .form-input:focus {
+        border-color: #0ea5e9;
+        box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.1);
+      }
+
+      .submit-btn {
+        transition: all 0.3s ease;
+        background: linear-gradient(45deg, #0ea5e9, #38bdf8);
+        box-shadow: 0 2px 10px rgba(14, 165, 233, 0.2);
+      }
+
+      .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+      }
+
+      .status-badge {
+        transition: all 0.3s ease;
+      }
+
+      .status-normal {
+        background: linear-gradient(45deg, #059669, #10b981);
+        color: white;
+      }
+
+      .status-anomaly {
+        background: linear-gradient(45deg, #dc2626, #ef4444);
+        color: white;
+      }
+
+      .table-row {
+        transition: all 0.3s ease;
+      }
+
+      .table-row:hover {
+        background: rgba(14, 165, 233, 0.05);
+      }
+
+      .back-button {
+        position: absolute; /* Changed from fixed to absolute */
+        top: 1.5rem;
+        left: 1.5rem;
+        transition: all 0.3s ease;
+        background: linear-gradient(45deg, #0ea5e9, #38bdf8);
+        box-shadow: 0 2px 10px rgba(14, 165, 233, 0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: white;
+        font-weight: 500;
+        z-index: 50;
+      }
+
+      .back-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+      }
+
+      .back-button svg {
+        width: 1.25rem;
+        height: 1.25rem;
+      }
+
+      /* Add a container for proper positioning */
+      .page-container {
+        position: relative;
+        width: 100%;
+        min-height: 100vh;
+      }
+
+      /* Update main content padding */
+      .main-content {
+        padding-top: 5rem; /* Increased to accommodate the back button */
+      }
+
+      @media (max-width: 640px) {
+        .back-button {
+          top: 1rem;
+          left: 1rem;
+        }
+
+        .main-content {
+          padding-top: 4rem; /* Slightly reduced for mobile */
+        }
+      }
+    </style>
+  </head>
+  <body class="min-h-screen">
+    <div class="page-container">
+      <!-- Back button -->
+      <a href="/dashboard" class="back-button">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+          />
+        </svg>
+        <span>Kembali</span>
+      </a>
+
+      <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 main-content">
+        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+          <!-- Header -->
+          <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">
+              Dasbor Arus Kas
+            </h1>
+            <p class="text-gray-600">
+              Pantau dan analisis transaksi Anda untuk menemukan pola yang tidak
+              biasa dengan sistem deteksi canggih kami
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Transaction Form -->
+            <div class="dashboard-card overflow-hidden shadow rounded-lg">
+              <div class="p-6">
+                <h3 class="card-title">Pengeluaran Baru</h3>
+                <form id="transactionForm" class="space-y-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >Jumlah</label
+                    >
+                    <div class="input-group">
+                      <span class="currency-symbol">Rp</span>
+                      <input
+                        id="amount"
+                        type="number"
+                        step="100"
+                        required
+                        class="form-input block w-full pl-10 pr-3 py-2 rounded-md"
+                        placeholder="Masukkan Biaya"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >Kategori</label
+                    >
+                    <select
+                      id="category"
+                      required
+                      class="form-input block w-full py-2 rounded-md"
+                    >
+                      <option value="">Pilih Kategori</option>
+                      <option value="food">Makanan</option>
+                      <option value="transport">Transportasi</option>
+                      <option value="entertainment">Hiburan</option>
+                      <option value="bills">Tagihan</option>
+                      <option value="other">Lainnya</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >Deskripsi</label
+                    >
+                    <input
+                      id="description"
+                      type="text"
+                      required
+                      class="form-input block w-full py-2 rounded-md"
+                      placeholder="Masukkan Deskripsi"
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >Tanggal</label
+                    >
+                    <input
+                      id="date"
+                      type="date"
+                      required
+                      class="form-input block w-full py-2 rounded-md"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="submit-btn w-full py-2 px-4 border border-transparent rounded-md text-white font-medium"
+                  >
+                    Kirim Pengeluaran
+                  </button>
+                </form>
               </div>
             </div>
 
-            <div class="form-group">
-              <label for="category">Kategori</label>
-              <select id="category" required>
-                <option value="">Pilih Kategori</option>
-                <option value="food">Makanan</option>
-                <option value="transport">Transportasi</option>
-                <option value="entertainment">Hiburan</option>
-                <option value="bills">Tagihan</option>
-                <option value="other">Lainnya</option>
-              </select>
+            <!-- Detection Result -->
+            <div
+              id="result"
+              class="dashboard-card overflow-hidden shadow rounded-lg hidden"
+            >
+              <div class="p-6">
+                <h3 class="card-title">Hasil Deteksi</h3>
+                <div id="resultContent" class="mt-4"></div>
+              </div>
             </div>
+          </div>
 
-            <div class="form-group">
-              <label for="description">Deskripsi</label>
-              <input
-                id="description"
-                type="text"
-                required
-                placeholder="Masukkan Deskripsi"
-              />
+          <!-- Transaction History -->
+          <div class="dashboard-card overflow-hidden shadow rounded-lg">
+            <div class="p-6">
+              <h3 class="card-title">Histori Pengeluaran</h3>
+              <div class="overflow-x-auto mt-4">
+                <table class="min-w-full">
+                  <thead>
+                    <tr>
+                      <th
+                        class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Tanggal
+                      </th>
+                      <th
+                        class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Jumlah
+                      </th>
+                      <th
+                        class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Kategori
+                      </th>
+                      <th
+                        class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Deskripsi
+                      </th>
+                      <th
+                        class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Status
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    id="historyContent"
+                    class="bg-white divide-y divide-gray-200"
+                  ></tbody>
+                </table>
+              </div>
             </div>
-
-            <div class="form-group">
-              <label for="date">Tanggal</label>
-              <input id="date" type="date" required />
-            </div>
-
-            <button type="submit" class="btn btn-primary">
-              Kirim Transaksi
-            </button>
-          </form>
-        </div>
-      </div>
-
-      <!-- Detection Result -->
-      <div id="result" class="card hidden">
-        <div class="card-header">
-          <h2>Hasil Deteksi</h2>
-        </div>
-        <div class="card-body">
-          <div id="resultContent"></div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Transaction History -->
-    <div class="card mt-20">
-      <div class="card-header">
-        <h2>Histori Transaksi</h2>
-      </div>
-      <div class="card-body">
-        <div class="table-responsive">
-          <table>
-            <thead>
-              <tr>
-                <th>Tanggal</th>
-                <th>Jumlah</th>
-                <th>Kategori</th>
-                <th>Deskripsi</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="historyContent"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+    <script>
+      function formatCurrency(amount) {
+        return new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+        }).format(amount);
+      }
 
-<style>
-  .min-h-screen {
-    min-height: 100vh;
-    background-color: #f5f5f5;
-    padding: 2rem 0;
-  }
+      function formatDate(dateString) {
+        return new Date(dateString).toLocaleDateString("id-ID", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+      }
 
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
+      function showLoading(element) {
+        element.classList.add("opacity-50", "cursor-wait");
+        element.disabled = true;
+      }
 
-  .header {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
+      function hideLoading(element) {
+        element.classList.remove("opacity-50", "cursor-wait");
+        element.disabled = false;
+      }
 
-  .header h1 {
-    font-size: 2.5rem;
-    color: #333;
-    margin-bottom: 1rem;
-  }
+      document
+        .getElementById("transactionForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
 
-  .header p {
-    color: #666;
-    font-size: 1.1rem;
-  }
+          const submitButton = e.target.querySelector('button[type="submit"]');
+          showLoading(submitButton);
 
-  .grid-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    margin-bottom: 2rem;
-  }
+          try {
+            const user_id = localStorage.getItem("user_id");
+            if (!user_id) {
+              alert("Please login first");
+              window.location.href = "/auth/login-page";
+              return;
+            }
 
-  @media (max-width: 768px) {
-    .grid-container {
-      grid-template-columns: 1fr;
-    }
-  }
+            const amount = parseFloat(document.getElementById("amount").value);
+            if (isNaN(amount) || amount <= 0) {
+              alert("Please enter a valid amount greater than 0");
+              return;
+            }
 
-  .card {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-  }
+            const transaction = {
+              amount: amount,
+              category: document.getElementById("category").value,
+              description: document.getElementById("description").value.trim(),
+              date: document.getElementById("date").value,
+              user_id: user_id,
+            };
 
-  .card-header {
-    background: #4a90e2;
-    color: white;
-    padding: 1rem 1.5rem;
-  }
+            if (!transaction.description) {
+              alert("Please enter a description");
+              return;
+            }
 
-  .card-header h2 {
-    margin: 0;
-    font-size: 1.25rem;
-  }
+            if (!transaction.date) {
+              alert("Please select a date");
+              return;
+            }
 
-  .card-body {
-    padding: 1.5rem;
-  }
+            const response = await fetch("/api/anomaly/detect", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(transaction),
+            });
 
-  .form-group {
-    margin-bottom: 1rem;
-  }
+            if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(
+                errorData.detail || "Error processing transaction"
+              );
+            }
 
-  .form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: #333;
-    font-weight: 500;
-  }
+            const result = await response.json();
 
-  .form-group input,
-  .form-group select {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
-  }
+            const resultDiv = document.getElementById("result");
+            const resultContent = document.getElementById("resultContent");
+            resultDiv.classList.remove("hidden");
 
-  .input-group {
-    position: relative;
-  }
+            resultContent.innerHTML = `
+                    <div class="p-4 rounded-lg ${
+                      result.analysis.is_anomaly ? "bg-red-50" : "bg-green-50"
+                    }">
+                        <h4 class="font-semibold text-lg mb-2 ${
+                          result.analysis.is_anomaly
+                            ? "text-red-700"
+                            : "text-green-700"
+                        }">
+                            ${
+                              result.analysis.is_anomaly
+                                ? "Anomali Terdeteksi!"
+                                : "Pengeluaran Normal"
+                            }
+                        </h4>
+                        <div class="space-y-2">
+                            <p class="text-sm">
+                                <span class="font-medium">Confidence Score:</span>
+                                <span class="ml-1">${result.analysis.confidence_score.toFixed(
+                                  2
+                                )}%</span>
+                            </p>
+                            <p class="text-sm">
+                                <span class="font-medium">Analisis Jumlah:</span>
+                                <span class="ml-1">${
+                                  result.analysis.insights.amount_analysis
+                                }</span>
+                            </p>
+                            <p class="text-sm">
+                                <span class="font-medium">Timing:</span>
+                                <span class="ml-1">${
+                                  result.analysis.insights.timing_analysis
+                                }</span>
+                            </p>
+                            <p class="text-sm">
+                                <span class="font-medium">Kategori:</span>
+                                <span class="ml-1">${
+                                  result.analysis.insights.category_frequency
+                                }</span>
+                            </p>
+                        </div>
+                    </div>
+                `;
 
-  .currency-symbol {
-    position: absolute;
-    left: 0.4rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #666;
-  }
-
-  .input-group input {
-    padding-left: 1.75rem;
-  }
-
-  .btn {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-
-  .btn-primary {
-    background: #4a90e2;
-    color: white;
-    width: 100%;
-  }
-
-  .btn-primary:hover {
-    background: #357abd;
-  }
-
-  .hidden {
-    display: none;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  th,
-  td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-  }
-
-  th {
-    background: #f8f9fa;
-    font-weight: 600;
-    color: #333;
-  }
-
-  .table-responsive {
-    overflow-x: auto;
-  }
-
-  .mt-20 {
-    margin-top: 2rem;
-  }
-
-  /* Status badges */
-  .status-badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 999px;
-    font-size: 0.875rem;
-    font-weight: 500;
-  }
-
-  .status-normal {
-    background: #d1fae5;
-    color: #065f46;
-  }
-
-  .status-anomaly {
-    background: #fee2e2;
-    color: #991b1b;
-  }
-</style>
-
-{% endblock %} {% block scripts %}
-<script>
-  function formatCurrency(amount) {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
-  }
-
-  function formatDate(dateString) {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  }
-
-  function showLoading(element) {
-    element.classList.add("opacity-50", "cursor-wait");
-    element.disabled = true;
-  }
-
-  function hideLoading(element) {
-    element.classList.remove("opacity-50", "cursor-wait");
-    element.disabled = false;
-  }
-
-  document
-    .getElementById("transactionForm")
-    .addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const submitButton = e.target.querySelector('button[type="submit"]');
-      showLoading(submitButton);
-
-      try {
-        const user_id = localStorage.getItem("user_id");
-        if (!user_id) {
-          alert("Please login first");
-          window.location.href = "/auth/login-page";
-          return;
-        }
-
-        const amount = parseFloat(document.getElementById("amount").value);
-        if (isNaN(amount) || amount <= 0) {
-          alert("Please enter a valid amount greater than 0");
-          return;
-        }
-
-        const transaction = {
-          amount: amount,
-          category: document.getElementById("category").value,
-          description: document.getElementById("description").value.trim(),
-          date: document.getElementById("date").value,
-          user_id: user_id,
-        };
-
-        if (!transaction.description) {
-          alert("Please enter a description");
-          return;
-        }
-
-        if (!transaction.date) {
-          alert("Please select a date");
-          return;
-        }
-
-        const response = await fetch("/api/anomaly/detect", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(transaction),
+            await loadHistory();
+            document.getElementById("transactionForm").reset();
+          } catch (error) {
+            console.error("Error:", error);
+            alert(error.message || "Error processing transaction");
+          } finally {
+            hideLoading(submitButton);
+          }
         });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.detail || "Error processing transaction");
+      async function loadHistory() {
+        try {
+          const user_id = localStorage.getItem("user_id");
+          if (!user_id) return;
+
+          const response = await fetch(`/api/anomaly/history/${user_id}`);
+          if (!response.ok) {
+            throw new Error("Failed to load history");
+          }
+
+          const data = await response.json();
+          const historyContent = document.getElementById("historyContent");
+
+          historyContent.innerHTML = data
+            .map(
+              (transaction) => `
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${formatDate(
+                          transaction.date
+                        )}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${formatCurrency(
+                          transaction.amount
+                        )}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 capitalize">${
+                          transaction.category
+                        }</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${
+                          transaction.description
+                        }</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                              transaction.anomaly_results[0]?.is_anomaly
+                                ? "status-anomaly"
+                                : "status-normal"
+                            }">
+                                ${
+                                  transaction.anomaly_results[0]?.is_anomaly
+                                    ? "Anomali"
+                                    : "Normal"
+                                }
+                            </span>
+                        </td>
+                    </tr>
+                `
+            )
+            .join("");
+        } catch (error) {
+          console.error("Error loading history:", error);
+          const historyContent = document.getElementById("historyContent");
+          historyContent.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="px-6 py-4 text-center text-sm text-red-500">
+                            Gagal memuat data histori pengeluaran
+                        </td>
+                    </tr>
+                `;
         }
-
-        const result = await response.json();
-
-        const resultDiv = document.getElementById("result");
-        const resultContent = document.getElementById("resultContent");
-        resultDiv.classList.remove("hidden");
-
-        resultContent.innerHTML = `
-        <div class="${
-          result.analysis.is_anomaly ? "status-anomaly" : "status-normal"
-        } p-6 rounded">
-          <div class="result-header">
-            <div class="result-title">
-              ${
-                result.analysis.is_anomaly
-                  ? "Anomaly Detected!"
-                  : "Normal Transaction"
-              }
-            </div>
-          </div>
-          <div class="result-details">
-            <p class="confidence-score">
-              <span class="label">Confidence Score:</span>
-              <span class="value">${(
-                result.analysis.confidence_score * 100
-              ).toFixed(2)}%</span>
-            </p>
-            <p class="analysis-item">
-              <span class="label">Amount Analysis:</span>
-              <span class="value">${
-                result.analysis.insights.amount_analysis
-              }</span>
-            </p>
-            <p class="analysis-item">
-              <span class="label">Timing:</span>
-              <span class="value">${
-                result.analysis.insights.timing_analysis
-              }</span>
-            </p>
-            <p class="analysis-item">
-              <span class="label">Category:</span>
-              <span class="value">${
-                result.analysis.insights.category_frequency
-              }</span>
-            </p>
-          </div>
-        </div>
-      `;
-
-        await loadHistory();
-        document.getElementById("transactionForm").reset();
-      } catch (error) {
-        console.error("Error:", error);
-        alert(error.message || "Error processing transaction");
-      } finally {
-        hideLoading(submitButton);
-      }
-    });
-
-  async function loadHistory() {
-    try {
-      const user_id = localStorage.getItem("user_id");
-      if (!user_id) return;
-
-      const response = await fetch(`/api/anomaly/history/${user_id}`);
-      if (!response.ok) {
-        throw new Error("Failed to load history");
       }
 
-      const data = await response.json();
-      const historyContent = document.getElementById("historyContent");
+      function checkLoginStatus() {
+        const userId = localStorage.getItem("user_id");
+        if (!userId) {
+          window.location.href = "/auth/login-page";
+        }
+      }
 
-      historyContent.innerHTML = data
-        .map(
-          (transaction) => `
-        <tr>
-          <td>${formatDate(transaction.date)}</td>
-          <td>${formatCurrency(transaction.amount)}</td>
-          <td class="capitalize">${transaction.category}</td>
-          <td>${transaction.description}</td>
-          <td>
-            <span class="status-badge ${
-              transaction.anomaly_results[0]?.is_anomaly
-                ? "status-anomaly"
-                : "status-normal"
-            }">
-              ${
-                transaction.anomaly_results[0]?.is_anomaly
-                  ? "Anomaly"
-                  : "Normal"
-              }
-            </span>
-          </td>
-        </tr>
-      `
-        )
-        .join("");
-    } catch (error) {
-      console.error("Error loading history:", error);
-    }
-  }
+      // Initialize page
+      document.addEventListener("DOMContentLoaded", () => {
+        loadHistory();
+        // Check login status every 5 seconds
+        setInterval(checkLoginStatus, 5000);
 
-  document.addEventListener("DOMContentLoaded", loadHistory);
-</script>
+        // Set default date to today
+        const today = new Date().toISOString().split("T")[0];
+        document.getElementById("date").value = today;
+
+        // Add input formatting for amount
+        const amountInput = document.getElementById("amount");
+        amountInput.addEventListener("input", function (e) {
+          // Remove non-numeric characters
+          let value = e.target.value.replace(/[^0-9]/g, "");
+
+          // Ensure the value is not empty
+          if (value) {
+            // Convert to number and format
+            const number = parseInt(value);
+            e.target.value = number;
+          }
+        });
+
+        // Add validation for description
+        const descriptionInput = document.getElementById("description");
+        descriptionInput.addEventListener("input", function (e) {
+          const value = e.target.value;
+          if (value.length > 100) {
+            e.target.value = value.substring(0, 100);
+          }
+        });
+
+        // Add validation for category selection
+        const categorySelect = document.getElementById("category");
+        categorySelect.addEventListener("change", function (e) {
+          if (!e.target.value) {
+            e.target.classList.add("border-red-500");
+          } else {
+            e.target.classList.remove("border-red-500");
+          }
+        });
+      });
+
+      // Add responsive handling for table
+      window.addEventListener("resize", function () {
+        const table = document.querySelector("table");
+        const windowWidth = window.innerWidth;
+
+        if (windowWidth < 640) {
+          // Mobile breakpoint
+          table.classList.add("table-mobile");
+        } else {
+          table.classList.remove("table-mobile");
+        }
+      });
+
+      // Add error boundary
+      window.addEventListener("error", function (e) {
+        console.error("Global error:", e.error);
+        // Prevent complete page crash
+        e.preventDefault();
+
+        // Show user-friendly error message
+        const errorMessage = document.createElement("div");
+        errorMessage.className =
+          "fixed bottom-4 right-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4";
+        errorMessage.innerHTML = `
+                <div class="flex">
+                    <div class="py-1">
+                        <svg class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm">Terjadi kesalahan. Silakan muat ulang halaman.</p>
+                    </div>
+                </div>
+            `;
+
+        document.body.appendChild(errorMessage);
+
+        // Remove error message after 5 seconds
+        setTimeout(() => {
+          errorMessage.remove();
+        }, 5000);
+      });
+    </script>
+  </body>
+</html>
 {% endblock %}

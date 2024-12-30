@@ -1,19 +1,154 @@
 {% block content %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Custom animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes gradientBG {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      body {
+        background: linear-gradient(-45deg, #f0f9ff, #e0f2fe, #f0f9ff);
+        background-size: 400% 400%;
+        animation: gradientBG 15s ease infinite;
+      }
+
+      nav {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+        border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+      }
+
+      .brand-title {
+        background: linear-gradient(120deg, #0369a1, #0ea5e9);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: 0.5px;
+      }
+
+      .dashboard-card {
+        animation: fadeIn 0.6s ease-out;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(229, 231, 235, 0.5);
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+      }
+
+      .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      .menu-link {
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+      }
+
+      .menu-link:before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 0;
+        background: linear-gradient(90deg, #0ea5e9, transparent);
+        opacity: 0.1;
+        transition: width 0.3s ease;
+      }
+
+      .menu-link:hover:before {
+        width: 100%;
+      }
+
+      .logout-btn {
+        transition: all 0.3s ease;
+        background: linear-gradient(45deg, #dc2626, #ef4444);
+        box-shadow: 0 2px 10px rgba(239, 68, 68, 0.2);
+      }
+
+      .logout-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+      }
+
+      .stat-value {
+        animation: countUp 1s ease-out forwards;
+        display: inline-block;
+        font-weight: 600;
+        color: #0369a1;
+      }
+
+      .stat-label {
+        color: #64748b;
+        font-size: 0.875rem;
+      }
+
+      @keyframes countUp {
+        from {
+          transform: translateY(10px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .card-title {
+        color: #0f172a;
+        font-weight: 600;
+        font-size: 1.125rem;
+        margin-bottom: 1rem;
+        position: relative;
+        padding-bottom: 0.5rem;
+      }
+
+      .card-title:after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 2px;
+        width: 40px;
+        background: linear-gradient(90deg, #0ea5e9, transparent);
+      }
+    </style>
   </head>
   <body class="bg-gray-100">
-    <nav class="bg-white shadow-lg">
+    <nav class="shadow-lg">
       <div class="max-w-7xl mx-auto px-4">
         <div class="flex justify-between h-16">
           <div class="flex">
             <div class="flex-shrink-0 flex items-center">
-              <h1 class="text-xl font-bold">Finalyze</h1>
+              <h1 class="text-2xl font-bold brand-title">Finalyze</h1>
             </div>
           </div>
           <div class="flex items-center">
@@ -23,7 +158,7 @@
               >
               <a
                 href="/auth/logout"
-                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
+                class="logout-btn inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
               >
                 Keluar
               </a>
@@ -37,36 +172,23 @@
       <div class="px-4 py-6 sm:px-0">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <!-- Quick Links -->
-          <div class="bg-white overflow-hidden shadow rounded-lg">
+          <div class="dashboard-card overflow-hidden shadow rounded-lg">
             <div class="p-6">
-              <h3 class="text-lg font-medium text-gray-900">Fitur</h3>
-              <div class="mt-4 space-y-4">
-                <a
-                  href="/anomaly"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
-                >
+              <h3 class="card-title">Fitur</h3>
+              <div class="mt-4 space-y-2">
+                <a href="/anomaly" class="menu-link rounded-md">
                   Analisis Transaksi
                 </a>
-                <a
-                  href="#"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
-                >
-                  Laporan
-                </a>
-                <a
-                  href="#"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
-                >
-                  Pengaturan
-                </a>
+                <a href="#" class="menu-link rounded-md">Laporan Transaksi</a>
+                <a href="#" class="menu-link rounded-md">Grafik Transaksi</a>
               </div>
             </div>
           </div>
 
           <!-- Summary Card -->
-          <div class="bg-white overflow-hidden shadow rounded-lg">
+          <div class="dashboard-card overflow-hidden shadow rounded-lg">
             <div class="p-6">
-              <h3 class="text-lg font-medium text-gray-900">Ringkasan</h3>
+              <h3 class="card-title">Ringkasan</h3>
               <div class="mt-4" id="summary">
                 <p class="text-sm text-gray-600">Memuat Ringkasan...</p>
               </div>
@@ -74,9 +196,9 @@
           </div>
 
           <!-- Profile Card -->
-          <div class="bg-white overflow-hidden shadow rounded-lg">
+          <div class="dashboard-card overflow-hidden shadow rounded-lg">
             <div class="p-6">
-              <h3 class="text-lg font-medium text-gray-900">Profil</h3>
+              <h3 class="card-title">Profil</h3>
               <div class="mt-4">
                 <p class="text-sm text-gray-600">Selamat datang di dasbor!</p>
                 <p class="text-sm text-gray-600 mt-2">
@@ -91,7 +213,6 @@
     </div>
 
     <script>
-      // Store user information in localStorage
       const urlParams = new URLSearchParams(window.location.search);
       const userId = urlParams.get("user_id");
       const userName = urlParams.get("user_name");
@@ -103,7 +224,6 @@
         localStorage.setItem("user_name", userName);
       }
 
-      // Function to load summary data
       async function loadSummary() {
         const userId = localStorage.getItem("user_id");
         if (!userId) return;
@@ -114,39 +234,38 @@
 
           const data = await response.json();
 
-          // Calculate summary statistics
           const totalTransactions = data.length;
           const anomalies = data.filter(
             (t) => t.anomaly_results[0]?.is_anomaly
           ).length;
           const totalAmount = data.reduce((sum, t) => sum + t.amount, 0);
 
-          // Update summary card
           document.getElementById("summary").innerHTML = `
-                    <div class="space-y-3">
-                        <p class="text-sm text-gray-600">
-                            Total Transaksi: <span class="font-medium">${totalTransactions}</span>
-                        </p>
-                        <p class="text-sm text-gray-600">
-                            Anomali Terdeteksi: <span class="font-medium text-red-600">${anomalies}</span>
-                        </p>
-                        <p class="text-sm text-gray-600">
-                            Total: <span class="font-medium">Rp.${totalAmount.toLocaleString()}</span>
-                        </p>
-                    </div>
-                `;
+            <div class="space-y-4">
+              <div class="stat-group">
+                <p class="stat-label">Total Transaksi</p>
+                <p class="stat-value">${totalTransactions}</p>
+              </div>
+              <div class="stat-group">
+                <p class="stat-label">Anomali Terdeteksi</p>
+                <p class="stat-value text-red-600">${anomalies}</p>
+              </div>
+              <div class="stat-group">
+                <p class="stat-label">Total Pengeluaran</p>
+                <p class="stat-value">Rp ${totalAmount.toLocaleString()}</p>
+              </div>
+            </div>
+          `;
         } catch (error) {
           console.error("Error loading summary:", error);
           document.getElementById("summary").innerHTML = `
-                    <p class="text-sm text-red-600">Error loading summary data</p>
-                `;
+            <p class="text-sm text-red-600">Gagal memuat data ringkasan</p>
+          `;
         }
       }
 
-      // Load summary when page loads
       document.addEventListener("DOMContentLoaded", loadSummary);
 
-      // Check login status
       function checkLoginStatus() {
         const userId = localStorage.getItem("user_id");
         if (!userId) {
@@ -154,7 +273,6 @@
         }
       }
 
-      // Check login status periodically
       setInterval(checkLoginStatus, 5000);
     </script>
   </body>
