@@ -88,8 +88,8 @@ Git      → Version control
 
 ### 🔍 Interactive Documentation
 
-- Swagger UI: `/docs`
-- ReDoc: `/redoc`
+- Swagger UI: [Swagger](https://finalyze.up.railway.app/docs)
+- ReDoc: [ReDoc](https://finalyze.up.railway.app/redoc)
 
 ### 🛣️ Key Endpoints
 
