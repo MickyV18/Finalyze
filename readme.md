@@ -69,76 +69,67 @@ Dokumentasi API lengkap tersedia di:
 
 - `/docs` - Swagger UI documentation
 - `/redoc` - ReDoc documentation
+  
+## Endpoint
 
-## Endpoints
-
-### Landing Page
-
+### Halaman Beranda
 - **URL**: `/`
-- **Method**: `GET`
-- **Response**:
-  - **200**: Returns the landing page in `text/html` format.
+- **Metode**: `GET`
+- **Respons**:
+  - **200**: Mengembalikan halaman beranda dalam format `text/html`
 
-### Dashboard Page
-
+### Halaman Dasbor
 - **URL**: `/dashboard`
-- **Method**: `GET`
-- **Response**:
-  - **200**: Returns the dashboard page in `text/html` format.
+- **Metode**: `GET`
+- **Respons**:
+  - **200**: Mengembalikan halaman dasbor dalam format `text/html`
 
-### Anomaly Dashboard
-
+### Dasbor Anomali
 - **URL**: `/anomaly-dashboard`
-- **Method**: `GET`
-- **Response**:
-  - **200**: Returns the anomaly dashboard page in `text/html` format.
+- **Metode**: `GET`
+- **Respons**:
+  - **200**: Mengembalikan halaman dasbor anomali dalam format `text/html`
 
-### Login with Google
-
+### Login dengan Google
 - **URL**: `/auth/login`
-- **Method**: `GET`
-- **Response**:
-  - **200**: Returns JSON data for the Google login process.
+- **Metode**: `GET`
+- **Respons**:
+  - **200**: Mengembalikan data JSON untuk proses login Google
 
 ### Callback
-
 - **URL**: `/auth/callback`
-- **Method**: `GET`
-- **Query Parameters**:
-  - `code` (string, required): Authorization code.
-- **Response**:
-  - **200**: Returns a JSON response.
-  - **422**: Validation error with detailed error messages.
+- **Metode**: `GET`
+- **Parameter Query**:
+  - `code` (string, wajib): Kode otorisasi
+- **Respons**:
+  - **200**: Mengembalikan respons JSON
+  - **422**: Error validasi dengan pesan error terperinci
 
-### Login Page
-
+### Halaman Login
 - **URL**: `/auth/login-page`
-- **Method**: `GET`
-- **Response**:
-  - **200**: Returns the login page in `text/html` format.
+- **Metode**: `GET`
+- **Respons**:
+  - **200**: Mengembalikan halaman login dalam format `text/html`
 
-### Authenticated Dashboard
-
+### Dasbor Terautentikasi
 - **URL**: `/auth/dashboard`
-- **Method**: `GET`
-- **Query Parameters**:
-  - `user_name` (string, optional, default: "User"): User name to display on the dashboard.
-- **Response**:
-  - **200**: Returns the dashboard page in `text/html` format.
-  - **422**: Validation error with detailed error messages.
+- **Metode**: `GET`
+- **Parameter Query**:
+  - `user_name` (string, opsional, default: "User"): Nama pengguna yang ditampilkan di dasbor
+- **Respons**:
+  - **200**: Mengembalikan halaman dasbor dalam format `text/html`
+  - **422**: Error validasi dengan pesan error terperinci
 
 ### Logout
-
 - **URL**: `/auth/logout`
-- **Method**: `GET`
-- **Response**:
-  - **200**: Returns the logout page in `text/html` format.
+- **Metode**: `GET`
+- **Respons**:
+  - **200**: Mengembalikan halaman logout dalam format `text/html`
 
-### Detect Anomaly
-
+### Deteksi Anomali
 - **URL**: `/api/anomaly/detect`
-- **Method**: `POST`
-- **Request Body**:
+- **Metode**: `POST`
+- **Body Request**:
   ```json
   {
     "amount": 1,
@@ -148,63 +139,56 @@ Dokumentasi API lengkap tersedia di:
     "user_id": "string"
   }
   ```
-- **Response**:
-  - **200**: Returns JSON response for a successful detection.
-  - **422**: Validation error with detailed error messages.
+- **Respons**:
+  - **200**: Mengembalikan respons JSON untuk deteksi yang berhasil
+  - **422**: Error validasi dengan pesan error terperinci
 
-### Get Anomaly History
-
+### Mendapatkan Riwayat Anomali
 - **URL**: `/api/anomaly/history/{user_id}`
-- **Method**: `GET`
-- **Path Parameters**:
-  - `user_id` (string, required): User ID for fetching history.
-- **Response**:
-  - **200**: Returns JSON response with anomaly history.
-  - **422**: Validation error with detailed error messages.
+- **Metode**: `GET`
+- **Parameter Path**:
+  - `user_id` (string, wajib): ID pengguna untuk mengambil riwayat
+- **Respons**:
+  - **200**: Mengembalikan respons JSON dengan riwayat anomali
+  - **422**: Error validasi dengan pesan error terperinci
 
-### Anomaly Page
-
+### Halaman Anomali
 - **URL**: `/anomaly`
-- **Method**: `GET`
-- **Response**:
-  - **200**: Returns anomaly information in JSON format.
+- **Metode**: `GET`
+- **Respons**:
+  - **200**: Mengembalikan informasi anomali dalam format JSON
 
-## Schemas
+## Skema
 
 ### HTTPValidationError
-
-- **Fields**:
-  - `detail` (array of objects):
-    - `loc` (array of string | integer): Location of the error.
-    - `msg` (string): Error message.
-    - `type` (string): Type of the error.
+- **Field**:
+  - `detail` (array objek):
+    - `loc` (array string | integer): Lokasi error
+    - `msg` (string): Pesan error
+    - `type` (string): Tipe error
 
 ### Transaction
-
-- **Fields**:
-  - `amount` (number, required): Must be greater than 0.
-  - `date` (string, required): Must match format `YYYY-MM-DD`.
-  - `category` (string, required): Must match predefined categories (e.g., makanan berat, minuman, transportasi, lainnya).
-  - `description` (string, required): Must be between 1 and 255 characters.
-  - `user_id` (string, required): Must have at least 1 character.
+- **Field**:
+  - `amount` (angka, wajib): Harus lebih besar dari 0
+  - `date` (string, wajib): Harus sesuai format `YYYY-MM-DD`
+  - `category` (string, wajib): Harus sesuai kategori yang ditentukan (contoh: makanan berat, minuman, transportasi, lainnya)
+  - `description` (string, wajib): Harus antara 1 dan 255 karakter
+  - `user_id` (string, wajib): Harus memiliki minimal 1 karakter
 
 ### ValidationError
+- **Field**:
+  - `loc` (array string | integer): Lokasi error
+  - `msg` (string): Pesan error
+  - `type` (string): Tipe error
 
-- **Fields**:
-  - `loc` (array of string | integer): Location of the error.
-  - `msg` (string): Error message.
-  - `type` (string): Type of the error.
-
-## Error Handling
-
-The API returns standard HTTP status codes to indicate success or failure of requests:
-
-- **200**: Request was successful.
-- **422**: Validation error with details about the incorrect request parameters.
+## Penanganan Error
+API mengembalikan kode status HTTP standar untuk menunjukkan keberhasilan atau kegagalan request:
+- **200**: Request berhasil
+- **422**: Error validasi dengan detail tentang parameter request yang tidak sesuai
 
 ## Contact
 
-For any questions or feedback, please contact the maintainer at [email@example.com].
+For any questions or feedback, please contact the maintainer at [18222093@std.stei.itb.ac.id].
 
 ## Links
 
