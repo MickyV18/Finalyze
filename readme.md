@@ -11,10 +11,11 @@ Developed by **Micky Valentino** (18222093)
 - 🌐 [Live Website](https://finalyze.up.railway.app/)
 - 💻 [GitHub Repository](https://github.com/MickyV18/Finalyze)
 - 📄 [Document](https://drive.google.com/file/d/10UH2RBS_3tc13GL42URFYEDE4vYC6dNQ/view?usp=sharing)
-- ⛓️ [Service Chatbot Integration](https://spotify-bot.azurewebsites.net/)
 
 ## 🌟 Overview
 Finalyze is your one-stop solution for personal finance management. Combining cutting-edge AI technology with user-friendly interfaces, it helps you track expenses, detect unusual spending patterns, and maintain better control over your finances.
+
+This website is integrated with [Service Chatbot](https://spotify-bot.azurewebsites.net/) created by Jonathan Wiguna / 18222019
 
 ## 🚀 Core Features
 ### 🔐 Secure Authentication
@@ -87,6 +88,8 @@ Azure    → Spotify Bot hosting
 ```
 
 ## 📚 API Documentation
+To use the Finalyze service, contact the Finalyze service owner and send the service link for permission. Then read the API Documentation to see the endpoint you want to go to and create code that points to the Finalyze service endpoint path.
+
 ### 🔍 Interactive Documentation
 - Swagger UI: [Swagger](https://finalyze.up.railway.app/docs)
 - ReDoc: [ReDoc](https://finalyze.up.railway.app/redoc)
