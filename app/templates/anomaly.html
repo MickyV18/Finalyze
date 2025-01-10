@@ -243,11 +243,13 @@
                       class="form-input block w-full py-2 rounded-md"
                     >
                       <option value="">Pilih Kategori</option>
-                      <option value="food">Makanan</option>
-                      <option value="transport">Transportasi</option>
-                      <option value="entertainment">Hiburan</option>
-                      <option value="bills">Tagihan</option>
-                      <option value="other">Lainnya</option>
+                      <option value="makanan berat">Makanan Berat</option>
+                      <option value="makanan ringan">Makanan Ringan</option>
+                      <option value="minuman">Minuman</option>
+                      <option value="PDAM">PDAM</option>
+                      <option value="transportasi">Transportasi</option>
+                      <option value="kuota">Kuota</option>
+                      <option value="lainnya">Lainnya</option>
                     </select>
                   </div>
 
@@ -432,49 +434,49 @@
             const resultContent = document.getElementById("resultContent");
             resultDiv.classList.remove("hidden");
 
+            // In the section where we handle form submission and display results
             resultContent.innerHTML = `
-                    <div class="p-4 rounded-lg ${
-                      result.analysis.is_anomaly ? "bg-red-50" : "bg-green-50"
-                    }">
-                        <h4 class="font-semibold text-lg mb-2 ${
-                          result.analysis.is_anomaly
-                            ? "text-red-700"
-                            : "text-green-700"
-                        }">
-                            ${
-                              result.analysis.is_anomaly
-                                ? "Anomali Terdeteksi!"
-                                : "Pengeluaran Normal"
-                            }
-                        </h4>
-                        <div class="space-y-2">
-                            <p class="text-sm">
-                                <span class="font-medium">Confidence Score:</span>
-                                <span class="ml-1">${result.analysis.confidence_score.toFixed(
-                                  2
-                                )}%</span>
-                            </p>
-                            <p class="text-sm">
-                                <span class="font-medium">Analisis Jumlah:</span>
-                                <span class="ml-1">${
-                                  result.analysis.insights.amount_analysis
-                                }</span>
-                            </p>
-                            <p class="text-sm">
-                                <span class="font-medium">Timing:</span>
-                                <span class="ml-1">${
-                                  result.analysis.insights.timing_analysis
-                                }</span>
-                            </p>
-                            <p class="text-sm">
-                                <span class="font-medium">Kategori:</span>
-                                <span class="ml-1">${
-                                  result.analysis.insights.category_frequency
-                                }</span>
-                            </p>
-                        </div>
-                    </div>
-                `;
+              <div class="p-4 rounded-lg ${
+                result.analysis.is_anomaly ? "bg-red-50" : "bg-green-50"
+              }">
+                  <h4 class="font-semibold text-lg mb-2 ${
+                    result.analysis.is_anomaly
+                      ? "text-red-700"
+                      : "text-green-700"
+                  }">
+                      ${
+                        result.analysis.is_anomaly
+                          ? "Anomali Terdeteksi!"
+                          : "Pengeluaran Normal"
+                      }
+                  </h4>
+                  <div class="space-y-2">
+                      <p class="text-sm">
+                          <span class="font-medium">Analisis Jumlah:</span>
+                          <span class="ml-1">${
+                            result.analysis.insights.amount_analysis
+                          }</span>
+                      </p>
+                      <p class="text-sm">
+                          <span class="font-medium">Timing:</span>
+                          <span class="ml-1">${
+                            result.analysis.insights.timing_analysis
+                          }</span>
+                      </p>
+                      <p class="text-sm">
+                          <span class="font-medium"></span>
+                          <span class="ml-1">${
+                            result.analysis.insights.category_frequency
+                          }</span>
+                      </p>
+                      <div class="mt-4 pt-3 border-t border-gray-200">
+                          <p class="text-xs text-gray-600">
+                              * Harga normal berdasarkan rata-rata transaksi dalam kategori yang sama
+                          </p>
+                      </div>
+                  </div>
+              </div>
+          `;
 
             await loadHistory();
             document.getElementById("transactionForm").reset();

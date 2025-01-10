@@ -11,7 +11,7 @@ router = APIRouter()
 class Transaction(BaseModel):
     amount: float = Field(..., gt=0)
     date: str = Field(..., pattern=r'^\d{4}-\d{2}-\d{2}$')
-    category: str = Field(..., pattern=r'^(food|transport|entertainment|bills|other)$')
+    category: str = Field(..., pattern=r'^(makanan berat|makanan ringan|minuman|PDAM|transportasi|kuota|lainnya)$')
     description: str = Field(..., min_length=1, max_length=255)
     user_id: str = Field(..., min_length=1)
 
@@ -57,8 +57,8 @@ async def detect_anomaly(transaction: Transaction, background_tasks: BackgroundT
             raise HTTPException(status_code=422, detail="Invalid date format. Use YYYY-MM-DD")
 
         # Validate category
-        valid_categories = ['food', 'transport', 'entertainment', 'bills', 'other']
-        if transaction.category.lower() not in valid_categories:
+        valid_categories = ['makanan berat', 'makanan ringan', 'minuman', 'PDAM', 'transportasi', 'kuota', 'lainnya']
+        if transaction.category.lower() not in [cat.lower() for cat in valid_categories]:
             raise HTTPException(status_code=422, detail="Invalid category")
 
         # Validate amount
