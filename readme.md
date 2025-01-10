@@ -10,7 +10,7 @@ Developed by **Micky Valentino** (18222093)
 ## 🔗 Quick Links
 - 🌐 [Live Website](https://finalyze.up.railway.app/)
 - 💻 [GitHub Repository](https://github.com/MickyV18/Finalyze)
-- 📄 [Documentation](https://docs.google.com/document/d/14WK7uafgyp0ZMGCIB1slm0hBcFGBWBIP3KtALS4k7gM/edit?usp=sharing)
+- 📄 [Document](https://drive.google.com/file/d/10UH2RBS_3tc13GL42URFYEDE4vYC6dNQ/view?usp=sharing)
 - ⛓️ [Service Chatbot Integration](https://spotify-bot.azurewebsites.net/)
 
 ## 🌟 Overview
