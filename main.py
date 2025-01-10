@@ -8,7 +8,19 @@ from app.routes.anomaly import router as anomaly_router
 
 templates = Jinja2Templates(directory="app/templates")
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI()
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    # masukkan URL yang ingin menggunakan service
+    allow_origins=["http://127.0.0.1:8000/", "https://finalyze.up.railway.app/"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Directly serve the index.html at the root route
 @app.get("/", response_class=HTMLResponse)
