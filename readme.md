@@ -1,197 +1,141 @@
-# Finalyze
+# 💰 Finalyze - Your Personal Finance Companion
 
-Developed by:
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Python](https://img.shields.io/badge/Python-FastAPI-green)
+![License](https://img.shields.io/badge/license-MIT-orange)
 
-- Name: Micky Valentino
-- NIM: 18222093
-- Course: II3160 Teknologi Sistem Terintegrasi
+> A smart financial management platform powered by AI to help you make better financial decisions.
 
-## Overview
+Developed by **Micky Valentino** (18222093)  
+_II3160 Teknologi Sistem Terintegrasi_
 
-Finalyze adalah website pengelolaan uang yang dirancang untuk membantu pengguna dalam manajemen keuangan pribadi. Website ini menyediakan layanan terpadu dengan berbagai fitur utama seperti autentikasi pengguna, pencatatan keuangan, dan deteksi anomali berbasis AI.
+## 🔗 Quick Links
 
-## Core Features
+- 🌐 [Live Website](https://finalyze.up.railway.app/)
+- 💻 [GitHub Repository](https://github.com/MickyV18/Finalyze)
+- 📄 [Documentation](https://docs.google.com/document/d/14WK7uafgyp0ZMGCIB1slm0hBcFGBWBIP3KtALS4k7gM/edit?usp=sharing)
 
-### 1. Authentication (Google OAuth)
+## 🌟 Overview
 
-- Login menggunakan akun Google
-- Integrasi dengan Supabase untuk manajemen pengguna
-- Keamanan data pengguna yang terjamin
-- Session management yang efisien
+Finalyze is your one-stop solution for personal finance management. Combining cutting-edge AI technology with user-friendly interfaces, it helps you track expenses, detect unusual spending patterns, and maintain better control over your finances.
 
-### 2. Pencatatan Keuangan
+## 🚀 Core Features
 
-- Input pengeluaran dengan detail kategori
-- Pencatatan tanggal dan deskripsi transaksi
-- Penyimpanan riwayat transaksi
-- Visualisasi data pengeluaran
-- Manajemen kategori pengeluaran
+### 🔐 Secure Authentication
 
-### 3. AI Anomaly Detection
+- **Google OAuth Integration**
+  - Seamless login with your Google account
+  - Robust security powered by Supabase
+  - Efficient session management
+  - Protected user data
 
-- Deteksi anomali pengeluaran menggunakan machine learning
-- Analisis pola pengeluaran berdasarkan data historis
-- Peringatan untuk transaksi yang mencurigakan
-- Model berbasis Isolation Forest
-- Pembelajaran dari data default dan data historis pengguna
+### 💳 Smart Financial Tracking
 
-## Tech Stack
+- **Comprehensive Transaction Management**
+  - Categorized expense tracking
+  - Detailed transaction history
+  - Interactive data visualizations
+  - Flexible category management
 
-### Backend
+### 🤖 AI-Powered Anomaly Detection
 
-- **FastAPI**: Framework web Python untuk backend
-- **Supabase**: Database dan autentikasi
-- **Python dotenv**: Manajemen environment variables
+- **Intelligent Spending Analysis**
+  - Machine learning-based unusual transaction detection
+  - Historical spending pattern analysis
+  - Smart alerts for suspicious activities
+  - Isolation Forest algorithm implementation
+  - Adaptive learning from user patterns
 
-### Frontend
+## 🛠️ Tech Stack
 
-- **HTML/CSS**: Struktur dan styling website
-- **Jinja2**: Template engine untuk rendering halaman
+### 🔧 Backend Architecture
 
-### Machine Learning
+```
+FastAPI     → Lightning-fast web framework
+Supabase    → Database & Authentication
+Python      → Core programming language
+```
 
-- **scikit-learn**: Library untuk implementasi Isolation Forest
-- **Pandas**: Manipulasi dan analisis data
+### 🎨 Frontend Technologies
 
-### Authentication
+```
+HTML/CSS    → Structure & styling
+Jinja2      → Template rendering
+```
 
-- **Google OAuth 2.0**: Sistem autentikasi pengguna
+### 🧠 Machine Learning Stack
 
-### Development & Deployment
+```
+scikit-learn → Isolation Forest implementation
+Pandas       → Data processing & analysis
+```
 
-- **Docker**: Kontainerisasi aplikasi
-- **Railway**: Platform deployment
-- **Git**: Version control
+### 🔒 Security
 
-## API Documentation
+```
+Google OAuth 2.0 → Secure user authentication
+```
 
-Dokumentasi API lengkap tersedia di:
+### ⚙️ DevOps
 
-- `/docs` - Swagger UI documentation
-- `/redoc` - ReDoc documentation
-  
-## Endpoint
+```
+Docker   → Application containerization
+Railway  → Cloud deployment platform
+Git      → Version control
+```
 
-### Halaman Beranda
-- **URL**: `/`
-- **Metode**: `GET`
-- **Respons**:
-  - **200**: Mengembalikan halaman beranda dalam format `text/html`
+## 📚 API Documentation
 
-### Halaman Dasbor
-- **URL**: `/dashboard`
-- **Metode**: `GET`
-- **Respons**:
-  - **200**: Mengembalikan halaman dasbor dalam format `text/html`
+### 🔍 Interactive Documentation
 
-### Dasbor Anomali
-- **URL**: `/anomaly-dashboard`
-- **Metode**: `GET`
-- **Respons**:
-  - **200**: Mengembalikan halaman dasbor anomali dalam format `text/html`
+- Swagger UI: `/docs`
+- ReDoc: `/redoc`
 
-### Login dengan Google
-- **URL**: `/auth/login`
-- **Metode**: `GET`
-- **Respons**:
-  - **200**: Mengembalikan data JSON untuk proses login Google
+### 🛣️ Key Endpoints
 
-### Callback
-- **URL**: `/auth/callback`
-- **Metode**: `GET`
-- **Parameter Query**:
-  - `code` (string, wajib): Kode otorisasi
-- **Respons**:
-  - **200**: Mengembalikan respons JSON
-  - **422**: Error validasi dengan pesan error terperinci
+#### 📱 User Interface
 
-### Halaman Login
-- **URL**: `/auth/login-page`
-- **Metode**: `GET`
-- **Respons**:
-  - **200**: Mengembalikan halaman login dalam format `text/html`
+| Endpoint             | Method | Description                 |
+| -------------------- | ------ | --------------------------- |
+| `/`                  | GET    | Home page                   |
+| `/dashboard`         | GET    | Main dashboard              |
+| `/anomaly-dashboard` | GET    | Anomaly detection dashboard |
 
-### Dasbor Terautentikasi
-- **URL**: `/auth/dashboard`
-- **Metode**: `GET`
-- **Parameter Query**:
-  - `user_name` (string, opsional, default: "User"): Nama pengguna yang ditampilkan di dasbor
-- **Respons**:
-  - **200**: Mengembalikan halaman dasbor dalam format `text/html`
-  - **422**: Error validasi dengan pesan error terperinci
+#### 🔐 Authentication
 
-### Logout
-- **URL**: `/auth/logout`
-- **Metode**: `GET`
-- **Respons**:
-  - **200**: Mengembalikan halaman logout dalam format `text/html`
+| Endpoint         | Method | Description             |
+| ---------------- | ------ | ----------------------- |
+| `/auth/login`    | GET    | Google login initiation |
+| `/auth/callback` | GET    | OAuth callback handling |
+| `/auth/logout`   | GET    | User logout             |
 
-### Deteksi Anomali
-- **URL**: `/api/anomaly/detect`
-- **Metode**: `POST`
-- **Body Request**:
-  ```json
-  {
-    "amount": 1,
-    "date": "4419-18-06",
-    "category": "lainnya",
-    "description": "string",
-    "user_id": "string"
-  }
-  ```
-- **Respons**:
-  - **200**: Mengembalikan respons JSON untuk deteksi yang berhasil
-  - **422**: Error validasi dengan pesan error terperinci
+#### 🤖 Anomaly Detection
 
-### Mendapatkan Riwayat Anomali
-- **URL**: `/api/anomaly/history/{user_id}`
-- **Metode**: `GET`
-- **Parameter Path**:
-  - `user_id` (string, wajib): ID pengguna untuk mengambil riwayat
-- **Respons**:
-  - **200**: Mengembalikan respons JSON dengan riwayat anomali
-  - **422**: Error validasi dengan pesan error terperinci
+| Endpoint                         | Method | Description                       |
+| -------------------------------- | ------ | --------------------------------- |
+| `/api/anomaly/detect`            | POST   | Analyze transaction for anomalies |
+| `/api/anomaly/history/{user_id}` | GET    | Retrieve anomaly history          |
 
-### Halaman Anomali
-- **URL**: `/anomaly`
-- **Metode**: `GET`
-- **Respons**:
-  - **200**: Mengembalikan informasi anomali dalam format JSON
+## 📊 Data Schemas
 
-## Skema
+### 📝 Transaction Schema
 
-### HTTPValidationError
-- **Field**:
-  - `detail` (array objek):
-    - `loc` (array string | integer): Lokasi error
-    - `msg` (string): Pesan error
-    - `type` (string): Tipe error
+```json
+{
+  "amount": "number (> 0)",
+  "date": "YYYY-MM-DD",
+  "category": "string (predefined categories)",
+  "description": "string (1-255 chars)",
+  "user_id": "string (min 1 char)"
+}
+```
 
-### Transaction
-- **Field**:
-  - `amount` (angka, wajib): Harus lebih besar dari 0
-  - `date` (string, wajib): Harus sesuai format `YYYY-MM-DD`
-  - `category` (string, wajib): Harus sesuai kategori yang ditentukan (contoh: makanan berat, minuman, transportasi, lainnya)
-  - `description` (string, wajib): Harus antara 1 dan 255 karakter
-  - `user_id` (string, wajib): Harus memiliki minimal 1 karakter
+## 🚨 Error Handling
 
-### ValidationError
-- **Field**:
-  - `loc` (array string | integer): Lokasi error
-  - `msg` (string): Pesan error
-  - `type` (string): Tipe error
+- **200**: Success
+- **422**: Validation Error (with detailed feedback)
 
-## Penanganan Error
-API mengembalikan kode status HTTP standar untuk menunjukkan keberhasilan atau kegagalan request:
-- **200**: Request berhasil
-- **422**: Error validasi dengan detail tentang parameter request yang tidak sesuai
+## 📞 Contact
 
-## Contact
-
-For any questions or feedback, please contact the maintainer at [18222093@std.stei.itb.ac.id].
-
-## Links
-
-- Website: [Website Finalyze](https://finalyze.up.railway.app/)
-- GitHub: [Github Finalyze](https://github.com/MickyV18/Finalyze)
-- Document: [Document Finalyze](https://docs.google.com/document/d/14WK7uafgyp0ZMGCIB1slm0hBcFGBWBIP3KtALS4k7gM/edit?usp=sharing)
+Got questions? Reach out!  
+📧 [18222093@std.stei.itb.ac.id](mailto:18222093@std.stei.itb.ac.id)
